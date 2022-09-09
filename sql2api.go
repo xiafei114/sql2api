@@ -7,7 +7,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/Mikaelemmmm/sql2pb/core"
+	"github.com/xiafei114/sql2api/core"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -16,9 +16,9 @@ func main() {
 	dbType := flag.String("db", "mysql", "the database type")
 	host := flag.String("host", "localhost", "the database host")
 	port := flag.Int("port", 3306, "the database port")
-	user := flag.String("user", "", "the database user")
-	password := flag.String("password", "", "the database password")
-	schema := flag.String("schema", "", "the database schema")
+	user := flag.String("user", "es", "the database user")
+	password := flag.String("password", "hpyg", "the database password")
+	schema := flag.String("schema", "easy_search", "the database schema")
 	table := flag.String("table", "*", "the table schema，multiple tables ',' split. ")
 	serviceName := flag.String("service_name", *schema, "the protobuf service name , defaults to the database schema.")
 	packageName := flag.String("package", *schema, "the protocol buffer package. defaults to the database schema.")
