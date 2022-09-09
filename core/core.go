@@ -229,11 +229,11 @@ func (s *Schema) String() string {
 		buf.WriteString("//--------------------------------" + m.Comment + "--------------------------------")
 		buf.WriteString("\n")
 		m.GenDefaultMessage(buf)
-		m.GenRpcAddReqRespMessage(buf)
-		m.GenRpcUpdateReqMessage(buf)
-		m.GenRpcDelReqMessage(buf)
-		m.GenRpcGetByIdReqMessage(buf)
-		m.GenRpcSearchReqMessage(buf)
+		// m.GenRpcAddReqRespMessage(buf)
+		// m.GenRpcUpdateReqMessage(buf)
+		// m.GenRpcDelReqMessage(buf)
+		// m.GenRpcGetByIdReqMessage(buf)
+		// m.GenRpcSearchReqMessage(buf)
 	}
 
 	buf.WriteString("\n")
@@ -263,7 +263,7 @@ func (s *Schema) String() string {
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler %sAdd \n", m.Name)
-		funcTpl += "\tpost /" + m.Name + "(Add" + m.Name + "Req) returns (CommonDataResp); \n"
+		funcTpl += "\tpost /" + m.Name + "(" + m.Name + ") returns (CommonDataResp); \n"
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
@@ -271,7 +271,7 @@ func (s *Schema) String() string {
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler %sUpdate \n", m.Name)
-		funcTpl += "\tput /" + m.Name + "/:id(Update" + m.Name + "Req) returns (CommonDataResp); \n"
+		funcTpl += "\tput /" + m.Name + "/:id(" + m.Name + ") returns (CommonDataResp); \n"
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
