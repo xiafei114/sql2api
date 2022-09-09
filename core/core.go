@@ -233,7 +233,7 @@ func (s *Schema) String() string {
 		// m.GenRpcUpdateReqMessage(buf)
 		// m.GenRpcDelReqMessage(buf)
 		// m.GenRpcGetByIdReqMessage(buf)
-		// m.GenRpcSearchReqMessage(buf)
+		m.GenRpcSearchReqMessage(buf)
 	}
 
 	buf.WriteString("\n")
@@ -262,7 +262,7 @@ func (s *Schema) String() string {
 		summary: 增加%s
 	)
 	`, m.Comment)
-		funcTpl += fmt.Sprintf("@handler %sAdd \n", m.Name)
+		funcTpl += fmt.Sprintf("@handler Add%s \n", m.Name)
 		funcTpl += "\tpost /" + m.Name + "(" + m.Name + ") returns (CommonDataResp); \n"
 		funcTpl += fmt.Sprintf(
 			`
@@ -270,15 +270,16 @@ func (s *Schema) String() string {
 		summary: 修改%s
 	)
 	`, m.Comment)
-		funcTpl += fmt.Sprintf("@handler %sUpdate \n", m.Name)
+		funcTpl += fmt.Sprintf("@handler Update%s \n", m.Name)
 		funcTpl += "\tput /" + m.Name + "/:id(" + m.Name + ") returns (CommonDataResp); \n"
+		// funcTpl += "\tput /" + m.Name + "/:id(Update" + m.Name + "Req) returns (CommonDataResp); \n"
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
 		summary: 删除%s
 	)
 	`, m.Comment)
-		funcTpl += fmt.Sprintf("@handler %sDelete \n", m.Name)
+		funcTpl += fmt.Sprintf("@handler Delete%s \n", m.Name)
 		funcTpl += "\tdelete /" + m.Name + "/:id(CommonIdReq) returns (CommonDataResp); \n"
 		funcTpl += fmt.Sprintf(
 			`
@@ -286,7 +287,7 @@ func (s *Schema) String() string {
 		summary: 获取%s
 	)
 	`, m.Comment)
-		funcTpl += fmt.Sprintf("@handler %sGet \n", m.Name)
+		funcTpl += fmt.Sprintf("@handler Get%s \n", m.Name)
 		funcTpl += "\tget /" + m.Name + "/:id(CommonIdReq) returns (CommonDataResp); \n"
 		funcTpl += fmt.Sprintf(
 			`
@@ -294,8 +295,8 @@ func (s *Schema) String() string {
 		summary: 批量查询%s
 	)
 	`, m.Comment)
-		funcTpl += fmt.Sprintf("@handler %sSearch \n", m.Name)
-		funcTpl += "\tget /" + m.Name + "(CommonQueryReq) returns (CommonDataResp); \n"
+		funcTpl += fmt.Sprintf("@handler Search%s \n", m.Name)
+		funcTpl += "\tget /" + m.Name + "(Search" + m.Name + "Req) returns (CommonDataResp); \n"
 	}
 	funcTpl = funcTpl + "\n}"
 	buf.WriteString(funcTpl)
@@ -560,8 +561,8 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 
 	m.Name = "Search" + mOrginName + "Req"
 	curFields := []MessageField{
-		{Typ: "int64", Name: "page", tag: 1, Comment: "page"},
-		{Typ: "int64", Name: "pageSize", tag: 2, Comment: "pageSize"},
+		{Typ: "int64", Name: "page", tag: 1, Comment: "page", optType: 1},
+		{Typ: "int64", Name: "pageSize", tag: 2, Comment: "pageSize", optType: 1},
 	}
 	var filedTag = len(curFields)
 	for _, field := range m.Fields {
@@ -574,6 +575,7 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 		if field.Comment == "" {
 			field.Comment = field.Name
 		}
+		field.optType = 1
 		curFields = append(curFields, field)
 	}
 	m.Fields = curFields
@@ -583,17 +585,17 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 	m.Name = mOrginName
 	m.Fields = mOrginFields
 
-	//resp
-	firstWord := strings.ToLower(string(m.Name[0]))
-	m.Name = "Search" + mOrginName + "Resp"
-	m.Fields = []MessageField{
-		{Typ: "[]" + mOrginName, Name: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower(), tag: 1, Comment: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower()},
-	}
-	buf.WriteString(fmt.Sprintf("%s\n", m))
+	// //resp
+	// firstWord := strings.ToLower(string(m.Name[0]))
+	// m.Name = "Search" + mOrginName + "Resp"
+	// m.Fields = []MessageField{
+	// 	{Typ: "[]" + mOrginName, Name: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower(), tag: 1, Comment: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower()},
+	// }
+	// buf.WriteString(fmt.Sprintf("%s\n", m))
 
-	//reset
-	m.Name = mOrginName
-	m.Fields = mOrginFields
+	// //reset
+	// m.Name = mOrginName
+	// m.Fields = mOrginFields
 }
 
 // String returns a string representation of a Message.
@@ -628,11 +630,12 @@ type MessageField struct {
 	Name    string
 	tag     int
 	Comment string
+	optType int
 }
 
 // NewMessageField creates a new message field.
-func NewMessageField(typ, name string, tag int, comment string) MessageField {
-	return MessageField{typ, name, tag, comment}
+func NewMessageField(typ, name string, tag int, comment string, optType int) MessageField {
+	return MessageField{typ, name, tag, comment, optType}
 }
 
 // Tag returns the unique numbered tag of the message field.
@@ -642,8 +645,13 @@ func (f MessageField) Tag() int {
 
 // String returns a string representation of a message field.
 func (f MessageField) String() string {
-	json := fmt.Sprintf(`json:"%s,optional"`, f.Name)
-	return fmt.Sprintf("%s %s `%s`", f.Name, f.Typ, json)
+	var optJson string
+	if f.optType == 0 {
+		optJson = fmt.Sprintf(`json:"%s,optional"`, f.Name)
+	} else {
+		optJson = fmt.Sprintf(`form:"%s,optional"`, f.Name)
+	}
+	return fmt.Sprintf("%s %s `%s`", f.Name, f.Typ, optJson)
 }
 
 // Column represents a database column.
@@ -709,7 +717,7 @@ func parseColumn(s *Schema, msg *Message, col Column) error {
 		return fmt.Errorf("no compatible protobuf type found for `%s`. column: `%s`.`%s`", col.DataType, col.TableName, col.ColumnName)
 	}
 
-	field := NewMessageField(fieldType, col.ColumnName, len(msg.Fields)+1, col.ColumnComment)
+	field := NewMessageField(fieldType, col.ColumnName, len(msg.Fields)+1, col.ColumnComment, 0)
 
 	err := msg.AppendField(field)
 	if nil != err {
