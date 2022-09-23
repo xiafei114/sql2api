@@ -561,8 +561,9 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 
 	m.Name = "Search" + mOrginName + "Req"
 	curFields := []MessageField{
-		{Typ: "int64", Name: "page", tag: 1, Comment: "page", optType: 1},
-		{Typ: "int64", Name: "pageSize", tag: 2, Comment: "pageSize", optType: 1},
+		{Typ: "int64", Name: "page", tag: 1, Comment: "第几页", optType: 1},
+		{Typ: "int64", Name: "pageSize", tag: 2, Comment: "每页多少条", optType: 1},
+		{Typ: "string", Name: "keyWord", tag: 3, Comment: "查询关键词", optType: 1},
 	}
 	var filedTag = len(curFields)
 	for _, field := range m.Fields {
