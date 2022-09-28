@@ -1,16 +1,22 @@
 #### Give a star before you see it. Ha ha ha ~ ~
 
-Generates a protobuf file from your mysql database.
+Generates a api file from your mysql database.
+仿照sql2pb写的生成通过 mysql database生成 gozero api文件
+里面加了一些自己项目的理解，本着生成出来复制总比手敲好的原则还是挺好用的。
 
 ### Uses
 #### Use from the command line:
 
 `go install github.com/xiafei114/sql2api@latest`
+可能不好用，pull下来自己 go install吧
+
+api最好配本人修改的sql2pb生成rpc服务
+https://github.com/xiafei114/sql2pb
 
 ```
-$ sql2pb -h
+$ sql2api -h
 
-Usage of sql2pb:
+Usage of sql2api:
   -db string
         the database type (default "mysql")
   -go_package string
@@ -37,7 +43,7 @@ Usage of sql2pb:
 ```
 
 ```
-$ sql2pb -go_package ./pb -host localhost -package pb -password root -port 3306 -schema usercenter -service_name usersrv -user root > usersrv.proto
+$ sql2api -go_package ./pb -host localhost -package pb -password root -port 3306 -schema usercenter -service_name usersrv -user root > usersrv.proto
 ```
 
 
@@ -88,3 +94,4 @@ func main() {
 
 #### Thanks for schemabuf
     schemabuf : https://github.com/mcos/schemabuf
+    sql2pb : https://github.com/Mikaelemmmm/sql2pb
