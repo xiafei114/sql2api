@@ -564,6 +564,9 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 		{Typ: "int64", Name: "page", tag: 1, Comment: "第几页", optType: 1},
 		{Typ: "int64", Name: "pageSize", tag: 2, Comment: "每页多少条", optType: 1},
 		{Typ: "string", Name: "keyWord", tag: 3, Comment: "查询关键词", optType: 1},
+		{Typ: "string", Name: "orderField", tag: 4, Comment: "排序字段", optType: 1, Value: "field"},
+		{Typ: "string", Name: "orderParam", tag: 5, Comment: "排序方法", optType: 1, Value: "order"},
+		{Typ: "int64", Name: "showSub", tag: 6, Comment: "是否显示关联信息", optType: 1},
 	}
 	var filedTag = len(curFields)
 	for _, field := range m.Fields {
@@ -632,11 +635,12 @@ type MessageField struct {
 	tag     int
 	Comment string
 	optType int
+	Value   string
 }
 
 // NewMessageField creates a new message field.
-func NewMessageField(typ, name string, tag int, comment string, optType int) MessageField {
-	return MessageField{typ, name, tag, comment, optType}
+func NewMessageField(typ, name string, tag int, comment string, optType int, value string) MessageField {
+	return MessageField{typ, name, tag, comment, optType, value}
 }
 
 // Tag returns the unique numbered tag of the message field.
@@ -650,7 +654,11 @@ func (f MessageField) String() string {
 	if f.optType == 0 {
 		optJson = fmt.Sprintf(`json:"%s,optional"`, f.Name)
 	} else {
-		optJson = fmt.Sprintf(`form:"%s,optional"`, f.Name)
+		if f.Value != "" {
+			optJson = fmt.Sprintf(`form:"%s,optional"`, f.Value)
+		} else {
+			optJson = fmt.Sprintf(`form:"%s,optional"`, f.Name)
+		}
 	}
 	return fmt.Sprintf("%s %s `%s`", f.Name, f.Typ, optJson)
 }
@@ -718,7 +726,7 @@ func parseColumn(s *Schema, msg *Message, col Column) error {
 		return fmt.Errorf("no compatible protobuf type found for `%s`. column: `%s`.`%s`", col.DataType, col.TableName, col.ColumnName)
 	}
 
-	field := NewMessageField(fieldType, col.ColumnName, len(msg.Fields)+1, col.ColumnComment, 0)
+	field := NewMessageField(fieldType, col.ColumnName, len(msg.Fields)+1, col.ColumnComment, 0, "")
 
 	err := msg.AppendField(field)
 	if nil != err {
