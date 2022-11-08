@@ -427,8 +427,8 @@ func (m Message) GenDefaultMessage(buf *bytes.Buffer) {
 	//resp
 	m.Name = mOrginName + "Resp"
 	curFields2 := []MessageField{
-		{Typ: "int64", Name: "code", tag: 1, Comment: "状态码", optType: 1},
-		{Typ: "string", Name: "message", tag: 2, Comment: "消息", optType: 1},
+		{Typ: "int64", Name: "code", tag: 1, Comment: "状态码"},
+		{Typ: "string", Name: "message", tag: 2, Comment: "消息"},
 	}
 	var filedTag2 int
 	for _, field := range m.Fields {
@@ -617,11 +617,11 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 	firstWord := strings.ToLower(string(m.Name[0]))
 	m.Name = "Search" + mOrginName + "Resp"
 	m.Fields = []MessageField{
-		{Typ: "int64", Name: "code", tag: 1, Comment: "状态码", optType: 1},
-		{Typ: "string", Name: "message", tag: 2, Comment: "消息", optType: 1},
-		{Typ: "int64", Name: "page", tag: 3, Comment: "第几页", optType: 1},
-		{Typ: "int64", Name: "pageSize", tag: 4, Comment: "每页多少条", optType: 1},
-		{Typ: "int64", Name: "totalCount", tag: 5, Comment: "共多少条记录", optType: 1},
+		{Typ: "int64", Name: "code", tag: 1, Comment: "状态码"},
+		{Typ: "string", Name: "message", tag: 2, Comment: "消息"},
+		{Typ: "int64", Name: "page", tag: 3, Comment: "第几页"},
+		{Typ: "int64", Name: "pageSize", tag: 4, Comment: "每页多少条"},
+		{Typ: "int64", Name: "totalCount", tag: 5, Comment: "共多少条记录"},
 		{Typ: "[]" + mOrginName, Name: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower(), tag: 6, Comment: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower()},
 	}
 	buf.WriteString(fmt.Sprintf("%s\n", m))
