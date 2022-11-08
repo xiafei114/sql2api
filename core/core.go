@@ -296,7 +296,7 @@ func (s *Schema) String() string {
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Search%s \n", m.Name)
-		funcTpl += "\tget /" + m.Name + "(Search" + m.Name + "Req) returns (CommonDataResp); \n"
+		funcTpl += "\tget /" + m.Name + "(Search" + m.Name + "Req) returns (Search" + m.Name + "Resp); \n"
 	}
 	funcTpl = funcTpl + "\n}"
 	buf.WriteString(funcTpl)
@@ -418,6 +418,30 @@ func (m Message) GenDefaultMessage(buf *bytes.Buffer) {
 		curFields = append(curFields, field)
 	}
 	m.Fields = curFields
+	buf.WriteString(fmt.Sprintf("%s\n", m))
+
+	//reset
+	m.Name = mOrginName
+	m.Fields = mOrginFields
+
+	//resp
+	m.Name = mOrginName + "Resp"
+	curFields2 := []MessageField{
+		{Typ: "int64", Name: "code", tag: 1, Comment: "状态码", optType: 1},
+		{Typ: "string", Name: "message", tag: 2, Comment: "消息", optType: 1},
+	}
+	var filedTag2 int
+	for _, field := range m.Fields {
+		filedTag2++
+		field.tag = filedTag2
+		field.Name = stringx.From(field.Name).ToCamelWithStartLower()
+		if field.Comment == "" {
+			field.Comment = field.Name
+		}
+		curFields2 = append(curFields2, field)
+	}
+	m.Fields = curFields2
+
 	buf.WriteString(fmt.Sprintf("%s\n", m))
 
 	//reset
@@ -589,17 +613,22 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 	m.Name = mOrginName
 	m.Fields = mOrginFields
 
-	// //resp
-	// firstWord := strings.ToLower(string(m.Name[0]))
-	// m.Name = "Search" + mOrginName + "Resp"
-	// m.Fields = []MessageField{
-	// 	{Typ: "[]" + mOrginName, Name: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower(), tag: 1, Comment: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower()},
-	// }
-	// buf.WriteString(fmt.Sprintf("%s\n", m))
+	//resp
+	firstWord := strings.ToLower(string(m.Name[0]))
+	m.Name = "Search" + mOrginName + "Resp"
+	m.Fields = []MessageField{
+		{Typ: "int64", Name: "code", tag: 1, Comment: "状态码", optType: 1},
+		{Typ: "string", Name: "message", tag: 2, Comment: "消息", optType: 1},
+		{Typ: "int64", Name: "page", tag: 3, Comment: "第几页", optType: 1},
+		{Typ: "int64", Name: "pageSize", tag: 4, Comment: "每页多少条", optType: 1},
+		{Typ: "int64", Name: "totalCount", tag: 5, Comment: "共多少条记录", optType: 1},
+		{Typ: "[]" + mOrginName, Name: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower(), tag: 6, Comment: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower()},
+	}
+	buf.WriteString(fmt.Sprintf("%s\n", m))
 
-	// //reset
-	// m.Name = mOrginName
-	// m.Fields = mOrginFields
+	//reset
+	m.Name = mOrginName
+	m.Fields = mOrginFields
 }
 
 // String returns a string representation of a Message.
