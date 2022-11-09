@@ -263,7 +263,7 @@ func (s *Schema) String() string {
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Add%s \n", m.Name)
-		funcTpl += "\tpost /" + m.Name + "(" + m.Name + ") returns (CommonDataResp); \n"
+		funcTpl += "\tpost /" + m.Name + "(" + m.Name + ") returns (CommonStatusResp); \n"
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
@@ -271,7 +271,7 @@ func (s *Schema) String() string {
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Update%s \n", m.Name)
-		funcTpl += "\tput /" + m.Name + "/:id(" + m.Name + ") returns (CommonDataResp); \n"
+		funcTpl += "\tput /" + m.Name + "/:id(" + m.Name + ") returns (CommonStatusResp); \n"
 		// funcTpl += "\tput /" + m.Name + "/:id(Update" + m.Name + "Req) returns (CommonDataResp); \n"
 		funcTpl += fmt.Sprintf(
 			`
@@ -280,7 +280,7 @@ func (s *Schema) String() string {
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Delete%s \n", m.Name)
-		funcTpl += "\tdelete /" + m.Name + "/:id(CommonIdReq) returns (CommonDataResp); \n"
+		funcTpl += "\tdelete /" + m.Name + "/:id(CommonIdReq) returns (CommonStatusResp); \n"
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
@@ -288,7 +288,7 @@ func (s *Schema) String() string {
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Get%s \n", m.Name)
-		funcTpl += "\tget /" + m.Name + "/:id(CommonIdReq) returns (CommonDataResp); \n"
+		funcTpl += "\tget /" + m.Name + "/:id(CommonIdReq) returns (" + m.Name + "Resp); \n"
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
