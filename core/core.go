@@ -622,7 +622,7 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 		{Typ: "int64", Name: "page", tag: 3, Comment: "第几页"},
 		{Typ: "int64", Name: "pageSize", tag: 4, Comment: "每页多少条"},
 		{Typ: "int64", Name: "totalCount", tag: 5, Comment: "共多少条记录"},
-		{Typ: "[]" + mOrginName, Name: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower(), tag: 6, Comment: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower()},
+		{Typ: "[]" + mOrginName, Name: "items", tag: 6, Comment: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower()},
 	}
 	buf.WriteString(fmt.Sprintf("%s\n", m))
 
