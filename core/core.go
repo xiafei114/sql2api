@@ -585,7 +585,7 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 
 	m.Name = "Search" + mOrginName + "Req"
 	curFields := []MessageField{
-		{Typ: "int64", Name: "page", tag: 1, Comment: "第几页", optType: 1},
+		{Typ: "int64", Name: "pageNo", tag: 1, Comment: "第几页", optType: 1},
 		{Typ: "int64", Name: "pageSize", tag: 2, Comment: "每页多少条", optType: 1},
 		{Typ: "string", Name: "keyWord", tag: 3, Comment: "查询关键词", optType: 1},
 		{Typ: "string", Name: "orderField", tag: 4, Comment: "排序字段", optType: 1, Value: "field"},
@@ -619,10 +619,10 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 	m.Fields = []MessageField{
 		{Typ: "int64", Name: "code", tag: 1, Comment: "状态码"},
 		{Typ: "string", Name: "message", tag: 2, Comment: "消息"},
-		{Typ: "int64", Name: "page", tag: 3, Comment: "第几页"},
+		{Typ: "int64", Name: "pageNo", tag: 3, Comment: "第几页"},
 		{Typ: "int64", Name: "pageSize", tag: 4, Comment: "每页多少条"},
 		{Typ: "int64", Name: "totalCount", tag: 5, Comment: "共多少条记录"},
-		{Typ: "[]" + mOrginName, Name: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower(), tag: 6, Comment: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower()},
+		{Typ: "[]" + mOrginName, Name: "items", tag: 6, Comment: stringx.From(firstWord + mOrginName[1:]).ToCamelWithStartLower()},
 	}
 	buf.WriteString(fmt.Sprintf("%s\n", m))
 
@@ -748,7 +748,7 @@ func parseColumn(s *Schema, msg *Message, col Column) error {
 	case "tinyint", "smallint", "int", "mediumint", "bigint":
 		fieldType = "int64"
 	case "float", "decimal", "double":
-		fieldType = "double"
+		fieldType = "float64"
 	}
 
 	if "" == fieldType {
