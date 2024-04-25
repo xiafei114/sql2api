@@ -296,7 +296,7 @@ func (s *Schema) String() string {
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Search%s \n", m.Name)
-		funcTpl += "\tget /" + m.Name + "(Search" + m.Name + "Req) returns (Search" + m.Name + "Resp); \n"
+		funcTpl += "\tget /" + m.Name + "(SearchCommonReq) returns (Search" + m.Name + "Resp); \n"
 	}
 	funcTpl = funcTpl + "\n}"
 	buf.WriteString(funcTpl)
@@ -583,31 +583,31 @@ func (m Message) GenRpcSearchReqMessage(buf *bytes.Buffer) {
 	mOrginName := m.Name
 	mOrginFields := m.Fields
 
-	m.Name = "Search" + mOrginName + "Req"
-	curFields := []MessageField{
-		{Typ: "int64", Name: "pageNo", tag: 1, Comment: "第几页", optType: 1},
-		{Typ: "int64", Name: "pageSize", tag: 2, Comment: "每页多少条", optType: 1},
-		{Typ: "string", Name: "keyWord", tag: 3, Comment: "查询关键词", optType: 1},
-		{Typ: "string", Name: "orderField", tag: 4, Comment: "排序字段", optType: 1, Value: "field"},
-		{Typ: "string", Name: "orderParam", tag: 5, Comment: "排序方法", optType: 1, Value: "order"},
-		{Typ: "int64", Name: "showSub", tag: 6, Comment: "是否显示关联信息", optType: 1},
-	}
-	var filedTag = len(curFields)
-	for _, field := range m.Fields {
-		if isInSlice([]string{"version", "del_state", "delete_time"}, field.Name) {
-			continue
-		}
-		filedTag++
-		field.tag = filedTag
-		field.Name = stringx.From(field.Name).ToCamelWithStartLower()
-		if field.Comment == "" {
-			field.Comment = field.Name
-		}
-		field.optType = 1
-		curFields = append(curFields, field)
-	}
-	m.Fields = curFields
-	buf.WriteString(fmt.Sprintf("%s\n", m))
+	// m.Name = "Search" + mOrginName + "Req"
+	// curFields := []MessageField{
+	// 	{Typ: "int64", Name: "pageNo", tag: 1, Comment: "第几页", optType: 1},
+	// 	{Typ: "int64", Name: "pageSize", tag: 2, Comment: "每页多少条", optType: 1},
+	// 	{Typ: "string", Name: "keyWord", tag: 3, Comment: "查询关键词", optType: 1},
+	// 	{Typ: "string", Name: "orderField", tag: 4, Comment: "排序字段", optType: 1, Value: "field"},
+	// 	{Typ: "string", Name: "orderParam", tag: 5, Comment: "排序方法", optType: 1, Value: "order"},
+	// 	{Typ: "int64", Name: "showSub", tag: 6, Comment: "是否显示关联信息", optType: 1},
+	// }
+	// var filedTag = len(curFields)
+	// for _, field := range m.Fields {
+	// 	if isInSlice([]string{"version", "del_state", "delete_time"}, field.Name) {
+	// 		continue
+	// 	}
+	// 	filedTag++
+	// 	field.tag = filedTag
+	// 	field.Name = stringx.From(field.Name).ToCamelWithStartLower()
+	// 	if field.Comment == "" {
+	// 		field.Comment = field.Name
+	// 	}
+	// 	field.optType = 1
+	// 	curFields = append(curFields, field)
+	// }
+	// m.Fields = curFields
+	// buf.WriteString(fmt.Sprintf("%s\n", m))
 
 	//reset
 	m.Name = mOrginName
