@@ -259,7 +259,7 @@ func (s *Schema) String() string {
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
-		summary: 增加%s
+		summary: "增加%s"
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Add%s \n", m.Name)
@@ -267,7 +267,7 @@ func (s *Schema) String() string {
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
-		summary: 修改%s
+		summary: "修改%s"
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Update%s \n", m.Name)
@@ -276,7 +276,7 @@ func (s *Schema) String() string {
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
-		summary: 删除%s
+		summary: "删除%s"
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Delete%s \n", m.Name)
@@ -284,7 +284,7 @@ func (s *Schema) String() string {
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
-		summary: 获取%s
+		summary: "获取%s"
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Get%s \n", m.Name)
@@ -292,7 +292,7 @@ func (s *Schema) String() string {
 		funcTpl += fmt.Sprintf(
 			`
 	@doc(
-		summary: 批量查询%s
+		summary: "批量查询%s"
 	)
 	`, m.Comment)
 		funcTpl += fmt.Sprintf("@handler Search%s \n", m.Name)
